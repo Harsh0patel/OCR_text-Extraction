@@ -1,0 +1,74 @@
+[
+    {
+        "filename": "C:/Users/hp333/Desktop/ocr/results/output\\result_json_1.json",
+        "original": "156387426414724544 1 wni",
+        "fixed": "156387426414724544_1_wni",
+        "confidence": 0.9803441166877747,
+        "bbox": [
+            1314,
+            1075,
+            1823,
+            1104
+        ]
+    },
+    {
+        "filename": "C:/Users/hp333/Desktop/ocr/results/output\\result_json_7.json",
+        "original": "162107205368239936 1 vrw",
+        "fixed": "162107205368239936_1_vrw",
+        "confidence": 0.959450900554657,
+        "bbox": [
+            1298,
+            1081,
+            1783,
+            1118
+        ]
+    },
+    {
+        "filename": "C:/Users/hp333/Desktop/ocr/results/output\\result_json_9.json",
+        "original": "162533734288078400 1Itw",
+        "fixed": "162533734288078400_1_Itw",
+        "confidence": 0.9804023504257202,
+        "bbox": [
+            1416,
+            953,
+            1928,
+            1002
+        ]
+    },
+    {
+        "filename": "C:/Users/hp333/Desktop/ocr/results/output\\result_json_9.json",
+        "original": "162533794288078400 1 Ihw",
+        "fixed": "162533794288078400_1_Ihw",
+        "confidence": 0.9615181088447571,
+        "bbox": [
+            1449,
+            1086,
+            1929,
+            1125
+        ]
+    },
+    {
+        "filename": "C:/Users/hp333/Desktop/ocr/results/output\\result_json_10.json",
+        "original": "162563926371110528_1_rcr",
+        "fixed": "162563926371110528_1_rcr",
+        "confidence": 0.9877092242240906,
+        "bbox": [
+            785,
+            956,
+            1330,
+            1001
+        ]
+    },
+    {
+        "filename": "C:/Users/hp333/Desktop/ocr/results/output\\result_json_26.json",
+        "original": "164659046174134464 1 kuu",
+        "fixed": "164659046174134464_1_kuu",
+        "confidence": 0.9846053123474121,
+        "bbox": [
+            1282,
+            1091,
+            1803,
+            1125
+        ]
+    }
+]
