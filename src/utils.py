@@ -1,5 +1,8 @@
 import cv2
 import numpy as np
+import os
+import json
+import regex as re
 
 def needs_opening(img):
     if len(img.shape) == 3:
@@ -66,10 +69,6 @@ def needs_dilation(img):
     return mean_stroke < min_stroke or median_stroke < 1.0
 
 def intelligent_dpi_adjustment(img):
-    """
-    Complete intelligent DPI adjustment for OCR.
-    Combines multiple strategies for best results.
-    """
     h, w = img.shape[:2]
     print(f"\n{'='*50}")
     print(f"Original dimensions: {w}x{h}")
@@ -118,3 +117,69 @@ def intelligent_dpi_adjustment(img):
 
     print(f"{'='*50}\n")
     return img
+
+def text_from_json(data):
+    data = data[0]
+    texts = data["rec_texts"]
+    confidences = data["rec_scores"]
+    boxes = data["rec_boxes"]
+    results = []
+
+    # Process each detected text
+    for i, text in enumerate(texts):
+        confidence = confidences[i] if i < len(confidences) else 0.0
+        bbox = boxes[i] if i < len(boxes) else None
+
+        # Try to fix underscore pattern
+        fixed_text = fix_underscore_pattern(texts[i])
+
+        if fixed_text:
+            results.append({
+                'original': text,
+                'fixed': fixed_text,
+                'confidence': confidence,
+                'bbox': bbox
+            })
+
+    print(results)
+    return results
+
+def fix_underscore_pattern(text):
+    # Remove all spaces first
+    text_no_spaces = text.replace(' ', '')
+
+    # If already has underscores in correct pattern, return as is
+    if re.match(r'^[0-9A-Z]+_\d+_[a-zA-Z]+$', text_no_spaces, re.IGNORECASE):
+        return text_no_spaces
+
+    # Pattern 1: Long alphanumeric + digit + letters (156381A26414724544 1 whl)
+    # Expected: XXXXXXXXXXXX_X_XXX
+    pattern1 = r'^([0-9A-Z]{10,})\s*(\d{1})\s*([a-zA-Z]{2,5})$'
+    match = re.match(pattern1, text, re.IGNORECASE)
+    if match:
+        return f"{match.group(1)}_{match.group(2)}_{match.group(3)}"
+
+    # Pattern 3: Only one underscore present (156381A26414724544_1whl or 156381A264147245441_whl)
+    if text.count('_') == 1:
+        # Case: XXXXX_Xwhl (missing second underscore)
+        pattern3a = r'^([0-9A-Z]+)_(\d{1})([a-zA-Z]{2,5})$'
+        match = re.match(pattern3a, text, re.IGNORECASE)
+        if match:
+            return f"{match.group(1)}_{match.group(2)}_{match.group(3)}"
+
+        # Case: XXXXX1_whl (missing first underscore)
+        pattern3b = r'^([0-9A-Z]+?)(\d{1})_([a-zA-Z]{2,5})$'
+        match = re.match(pattern3b, text, re.IGNORECASE)
+        if match:
+            return f"{match.group(1)}_{match.group(2)}_{match.group(3)}"
+
+    # Pattern 4: Has spaces that should be underscores
+    # Replace spaces with underscores if text looks like barcode format
+    if re.match(r'^[0-9A-Z\s]+(\d{1})+\s+[a-zA-Z]+$', text, re.IGNORECASE):
+        # Split by space and reconstruct
+        parts = text.split()
+        if len(parts) >= 3:
+            # Last part is letters, second last is digit(s)
+            return '_'.join(parts)
+
+    return None
